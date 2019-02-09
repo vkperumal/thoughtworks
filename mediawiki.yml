@@ -1,0 +1,22 @@
+# Mediawiki with mysql as database
+
+version: "3"
+services:
+  mediawiki:
+    image: mediawiki:latest
+    links:
+      - mysql
+    ports:
+      - 8080:80
+
+
+
+  mysql:
+    image: mysql:latest
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_DATABASE: wiki
+      MYSQL_USER: wiki
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: 
