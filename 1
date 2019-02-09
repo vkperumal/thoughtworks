@@ -8,8 +8,8 @@ services:
       - mysql
     ports:
       - 8080:80
-#    volumes:
-#      - ./LocalSettings.php:/var/www/html/LocalSettings.php:rw
+    volumes:
+      - file:/var/www/html/LocalSettings.php:rw
 
 
   mysql:
@@ -31,3 +31,9 @@ volumes:
       type: 'none'
       o: 'bind'
       device: '/tmp/mysql'
+  file:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '/root/thoughtworks/mediawiki/LocalSettings.php'
