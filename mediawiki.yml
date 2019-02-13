@@ -11,6 +11,10 @@
         - 8080:80
       volumes:
         - /root/thoughtworks/LocalSettings.php:/var/www/html/LocalSettings.php:rw
+      deploy:
+        replicas: 1
+        restart_policy:
+          condition: on-failure
       networks:
          mediawiki-net:
       logging:
@@ -32,6 +36,10 @@
       secrets:
         - db_password
         - db_root_password
+      deploy:
+        replicas: 1
+        restart_policy:
+          condition: on-failure
       networks:
          mediawiki-net:
       logging:
