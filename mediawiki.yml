@@ -1,33 +1,35 @@
+---
 # Mediawiki with mysql as database
 
-version: "3"
-services:
-  mediawiki:
-    image: mediawiki:latest
-    depends_on:
-      - mysql
-    ports:
-      - 8080:80
-#    volumes:
-#      - ./LocalSettings.php:/var/www/html/LocalSettings.php:rw
+  version: "3.1"
+  services:
+    mediawiki:
+      image: mediawiki:latest
+      depends_on:
+        - mysql
+      ports:
+        - 8080:80
+      volumes:
+        - /root/thoughtworks/LocalSettings.php:/var/www/html/LocalSettings.php:rw
 
 
-  mysql:
-    image: mysql:latest
-    ports:
-      - 3306:3306
-    environment:
-      MYSQL_DATABASE: wiki
-      MYSQL_USER: wiki
-      MYSQL_PASSWORD: password
-      MYSQL_ROOT_PASSWORD: password
-    volumes:
-      - dbdata:/var/lib/mysql:rw
+    mysql:
+      image: mysql:latest
+      ports:
+        - 3306:3306
+      environment:
+        MYSQL_DATABASE: wiki
+        MYSQL_USER: wiki
+        MYSQL_PASSWORD_FILE: /run/secrets/db_password
+        MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+      volumes:
+        - /root/thoughtworks/mysql:/var/lib/mysql:rw
+      secrets:
+        - db_password
+        - db_root_password
 
-volumes:
-  dbdata:
-    driver: local
-    driver_opts:
-      type: 'none'
-      o: 'bind'
-      device: '/tmp/mysql'
+  secrets:
+    db_password:
+      external: true
+    db_root_password:
+      external: true
