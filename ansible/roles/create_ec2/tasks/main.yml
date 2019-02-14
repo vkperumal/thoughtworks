@@ -1,0 +1,55 @@
+---
+- include_vars: main.yml
+
+- name: create ec2 security group
+  ec2_group:
+    aws_access_key: "{{ aws_key }}"
+    aws_secret_key: "{{ aws_secret }}"
+    name: sec_group_test
+    region: "{{ region }}"
+    vpc_id: "{{ vpc }}"
+    description: created by ansible
+    rules:
+      - proto: tcp
+        from_port: 22
+        to_port: 22
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 8080
+        to_port: 8080
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 3306
+        to_port: 3306
+        cidr_ip: 0.0.0.0/0
+    rules_egress:
+      - proto: all
+        cidr_ip: 0.0.0.0/0
+
+- name: create the ec2 instance
+  ec2:
+    aws_access_key: "{{ aws_key }}"
+    aws_secret_key: "{{ aws_secret }}"
+    region: "{{ region }}"
+    image: "{{ image }}"
+    wait: true
+    group: "{{ sec_group }}"
+    key_name: "{{ key_name }}"
+    instance_type: "{{ instance }}"
+    vpc_subnet_id: "{{ subnet }}"
+    count: 1
+  register: aws_host
+  tags: test
+
+- name: Add the newly created host so that we can further contact it
+  add_host:
+    name: "{{ item.public_ip }}"
+    groups: mediawiki
+  with_items: "{{ aws_host.instances }}"
+
+- name: Wait for SSH to come up
+  wait_for:
+    host: "{{ item.public_ip }}"
+    port: 22
+    state: started
+  with_items: "{{ aws_host.instances }}"
