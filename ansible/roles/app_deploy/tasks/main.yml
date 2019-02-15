@@ -1,0 +1,66 @@
+---
+
+- name: disable selinux on the server
+  selinux:
+    state: disabled
+
+- name: restart the server
+  shell: "sleep 5 && reboot" 
+  async: 1
+  poll: 0
+
+- name: wait for the server to come online
+  wait_for:
+    host: "{{ inventory_hostname }}"
+    port: 22
+    delay: 120
+    timeout: 300
+    connect_timeout: 30
+  connection: local
+
+- name: create a directory
+  file:
+    path: /opt/docker
+    state: directory
+
+- name: copy the docker engine
+  copy:
+    src: "files/docker-engine-17.05.0.ce-1.el7.centos.x86_64.rpm"
+    dest: /opt/docker
+
+- name: install docker
+  yum:
+    name: /opt/docker/docker-engine-17.05.0.ce-1.el7.centos.x86_64.rpm
+    state: installed
+
+- name: remove the docker directory
+  file:
+    path: /opt/docker
+    state: absent
+
+- name: clone the git repository
+  git:
+    clone: yes
+    repo: "https://github.com/vkperumal/thoughtworks.git"
+    dest: /opt/thoughtworks
+
+
+- name: start the docker service
+  service:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: initiate docker swarm
+  shell: "docker swarm init --advertise-addr {{ inventory_hostname }}"
+
+- name: create docker secrets
+  shell: "echo '{{ item.src }}' | docker secret create {{ item.dest }} - " 
+  with_items:
+    - { src: '{{ db_password }}', dest: db_password }
+    - { src: '{{ db_root_password }}' , dest: db_root_password }
+
+- name: start the stack
+  shell: "docker stack deploy --compose-file=mediawiki.yml mediawiki"
+  args:
+    chdir: "/opt/thoughtworks"

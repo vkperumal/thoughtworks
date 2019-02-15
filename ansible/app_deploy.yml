@@ -1,3 +1,8 @@
 ---
 
 - name: deploy the app on ec2 instance
+  hosts: localhost
+  gather_facts: yes
+  become: yes
+  roles:
+    - "app_deploy"

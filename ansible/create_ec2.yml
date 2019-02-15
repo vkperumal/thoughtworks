@@ -6,3 +6,11 @@
   connection: local
   roles:
     - "create_ec2"
+
+
+- name: deploy the app on ec2 instance
+  hosts: mediawiki
+  gather_facts: yes
+  become: yes
+  roles:
+    - "app_deploy"
