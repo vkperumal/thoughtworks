@@ -20,7 +20,7 @@
       logging:
         driver: syslog
         options:
-          syslog-address: "tcp://127.0.0.1:514"
+          syslog-address: "udp://127.0.0.1:514"
 
     mysql:
       image: mysql:latest
@@ -45,7 +45,7 @@
       logging:
         driver: syslog
         options:
-          syslog-address: "tcp://127.0.0.1:514"
+          syslog-address: "udp://127.0.0.1:514"
 
   secrets:
     db_password:
