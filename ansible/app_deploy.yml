@@ -1,7 +1,7 @@
 ---
 
 - name: deploy the app on ec2 instance
-  hosts: localhost
+  hosts: mediawiki
   gather_facts: yes
   become: yes
   roles:

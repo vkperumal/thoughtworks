@@ -10,7 +10,7 @@
       ports:
         - 8080:80
       volumes:
-        - /root/thoughtworks/LocalSettings.php:/var/www/html/LocalSettings.php:rw
+        - /opt/thoughtworks/LocalSettings.php:/var/www/html/LocalSettings.php:rw
       deploy:
         replicas: 1
         restart_policy:
@@ -32,7 +32,7 @@
         MYSQL_PASSWORD_FILE: /run/secrets/db_password
         MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
       volumes:
-        - /root/thoughtworks/mysql:/var/lib/mysql:rw
+        - /opt/thoughtworks/mysql:/var/lib/mysql:rw
       secrets:
         - db_password
         - db_root_password

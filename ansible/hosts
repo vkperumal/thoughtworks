@@ -1,5 +1,5 @@
 [mediawiki]
-
+18.188.227.235
 
 [mediawiki:vars]
 ansible_ssh_private_key_file=/root/.vijay-test.pem

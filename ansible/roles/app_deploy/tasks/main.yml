@@ -3,11 +3,13 @@
 - name: disable selinux on the server
   selinux:
     state: disabled
+  register: sestatus
 
 - name: restart the server
   shell: "sleep 5 && reboot" 
   async: 1
   poll: 0
+  when: sestatus.changed == "true"
 
 - name: wait for the server to come online
   wait_for:
@@ -17,6 +19,7 @@
     timeout: 300
     connect_timeout: 30
   connection: local
+  when: sestatus.changed == "true"
 
 - name: create a directory
   file:
@@ -25,13 +28,20 @@
 
 - name: copy the docker engine
   copy:
-    src: "files/docker-engine-17.05.0.ce-1.el7.centos.x86_64.rpm"
+    src: "files/{{ item }}"
     dest: /opt/docker
+  with_items:
+    - "docker-engine-selinux-17.05.0.ce-1.el7.centos.noarch.rpm"
+    - "docker-engine-17.05.0.ce-1.el7.centos.x86_64.rpm"
 
 - name: install docker
   yum:
-    name: /opt/docker/docker-engine-17.05.0.ce-1.el7.centos.x86_64.rpm
+    name: "{{ item }}"
     state: installed
+  with_items:
+    - "/opt/docker/docker-engine-selinux-17.05.0.ce-1.el7.centos.noarch.rpm"
+    - "/opt/docker/docker-engine-17.05.0.ce-1.el7.centos.x86_64.rpm"
+    - "git"
 
 - name: remove the docker directory
   file:
