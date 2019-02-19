@@ -30,7 +30,7 @@ $wgMetaNamespace = "Thoughtworks_test";
 $wgScriptPath = "";
 
 ## The protocol and server name to use in fully-qualified URLs
-$wgServer = "http://18.188.227.235:8080";
+$wgServer = "http://{{ inventory_hostname }}:8080";
 
 ## The URL path to static resources (images, scripts, etc.)
 $wgResourceBasePath = $wgScriptPath;
@@ -44,8 +44,8 @@ $wgLogo = "$wgResourceBasePath/resources/assets/wiki.png";
 $wgEnableEmail = true;
 $wgEnableUserEmail = true; # UPO
 
-$wgEmergencyContact = "apache@18.188.227.235";
-$wgPasswordSender = "apache@18.188.227.235";
+$wgEmergencyContact = "apache@{{ inventory_hostname }}";
+$wgPasswordSender = "apache@{{ inventory_hostname }}";
 
 $wgEnotifUserTalk = false; # UPO
 $wgEnotifWatchlist = false; # UPO

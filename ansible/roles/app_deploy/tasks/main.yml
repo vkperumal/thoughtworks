@@ -54,6 +54,11 @@
     repo: "https://github.com/vkperumal/thoughtworks.git"
     dest: /opt/thoughtworks
 
+- name: copy the templates file
+  template:
+    src: templates/LocalSettings.php.j2
+    dest: /opt/thoughtworks/LocalSettings.php
+
 
 - name: start the docker service
   service:
